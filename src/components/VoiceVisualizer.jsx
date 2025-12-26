@@ -68,10 +68,10 @@ const VoiceVisualizer = ({ inputAnalyser, outputAnalyser, isActive }) => {
         const geometry = new THREE.IcosahedronGeometry(1, 10);
 
         const sphereMaterial = new THREE.MeshStandardMaterial({
-            color: 0xff1493, // ROSA (DeepPink)
+            color: 0x000010, // Deep Blue-Black (from snippet)
             metalness: 0.5,
             roughness: 0.1,
-            emissive: 0xff69b4, // ROSA CLARO (HotPink) para emissão
+            emissive: 0x011122, // Slightly adjusted for better visibility on dark bg
             emissiveIntensity: 1.5,
         });
 
@@ -85,37 +85,39 @@ const VoiceVisualizer = ({ inputAnalyser, outputAnalyser, isActive }) => {
         };
 
         const sphere = new THREE.Mesh(geometry, sphereMaterial);
+        sphere.position.y = 0.8; // Move sphere UP in 3D space
         scene.add(sphere);
         sphereRef.current = sphere;
 
         // --- Anéis de Saturno (3 anéis rosa bem finos e brilhosos) ---
         const ringMaterial = new THREE.MeshBasicMaterial({
-            color: 0xff1493, // ROSA (DeepPink) - mesma cor da esfera
+            color: 0xffffff, // White
             side: THREE.DoubleSide,
             transparent: true,
-            opacity: 0.9, // Opacidade alta para mais brilho
-            emissive: 0xff69b4, // ROSA CLARO (HotPink) para emissão
-            emissiveIntensity: 2.0, // Intensidade do brilho
+            opacity: 0.8,
         });
 
         // Anel 1: Horizontal
-        const ringGeometry1 = new THREE.RingGeometry(1.5, 1.52, 64);
+        const ringGeometry1 = new THREE.RingGeometry(1.5, 1.6, 64);
         const ring1 = new THREE.Mesh(ringGeometry1, ringMaterial.clone());
+        ring1.position.y = 0.8; // Align with sphere
         ring1.rotation.x = Math.PI / 2; // Horizontal
         scene.add(ring1);
         ring1Ref.current = ring1;
 
         // Anel 2: Vertical/Diagonal
-        const ringGeometry2 = new THREE.RingGeometry(1.5, 1.52, 64);
+        const ringGeometry2 = new THREE.RingGeometry(1.5, 1.6, 64);
         const ring2 = new THREE.Mesh(ringGeometry2, ringMaterial.clone());
+        ring2.position.y = 0.8; // Align with sphere
         ring2.rotation.x = Math.PI / 3; // 60 graus
         ring2.rotation.y = Math.PI / 4; // 45 graus diagonal
         scene.add(ring2);
         ring2Ref.current = ring2;
 
         // Anel 3: Outra diagonal
-        const ringGeometry3 = new THREE.RingGeometry(1.5, 1.52, 64);
+        const ringGeometry3 = new THREE.RingGeometry(1.5, 1.6, 64);
         const ring3 = new THREE.Mesh(ringGeometry3, ringMaterial.clone());
+        ring3.position.y = 0.8; // Align with sphere
         ring3.rotation.x = -Math.PI / 4; // -45 graus
         ring3.rotation.y = -Math.PI / 3; // -60 graus
         scene.add(ring3);
@@ -184,17 +186,17 @@ const VoiceVisualizer = ({ inputAnalyser, outputAnalyser, isActive }) => {
                 );
             }
 
-            // Animar os anéis (rotação contínua em diferentes direções)
+            // Animar os anéis (rotação contínua e mais rápida)
             if (ring1Ref.current) {
-                ring1Ref.current.rotation.z += 0.05; // Gira no próprio plano (HORIZONTAL)
+                ring1Ref.current.rotation.z += 0.15; // Faster rotation
             }
             if (ring2Ref.current) {
-                ring2Ref.current.rotation.x += 0.04; // Gira no eixo X
-                ring2Ref.current.rotation.z += 0.03; // Gira no eixo Z também
+                ring2Ref.current.rotation.x += 0.12;
+                ring2Ref.current.rotation.z += 0.09;
             }
             if (ring3Ref.current) {
-                ring3Ref.current.rotation.y += 0.05; // Gira no eixo Y
-                ring3Ref.current.rotation.z -= 0.02; // Sentido contrário no Z
+                ring3Ref.current.rotation.y += 0.15;
+                ring3Ref.current.rotation.z -= 0.06;
             }
 
             // RENDER DIRETO - SEM COMPOSER
@@ -225,13 +227,14 @@ const VoiceVisualizer = ({ inputAnalyser, outputAnalyser, isActive }) => {
             ref={mountRef}
             style={{
                 width: '300px',
-                height: '300px',
+                height: '400px', // Taller to allow movement
                 display: 'block',
                 background: 'transparent',
                 borderRadius: '50%',
-                overflow: 'hidden',
+                overflow: 'visible', // Allow content to flow
                 margin: '0 auto',
                 position: 'relative',
+                top: '-150px', // Lift the whole visualizer
                 zIndex: 10
             }}
         />

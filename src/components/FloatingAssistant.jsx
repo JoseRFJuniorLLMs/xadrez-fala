@@ -11,7 +11,7 @@ const FloatingAssistant = ({ inputAnalyser, outputAnalyser, isRecording, connect
     const isActive = connected || isRecording;
 
     return (
-        <div className="absolute top-[25%] right-[20px] translate-x-0 -translate-y-1/2 z-[9999] flex flex-col items-center">
+        <div className="absolute bottom-8 right-8 z-[9999] flex flex-col items-center">
             <div className="relative flex items-center justify-center w-16 h-16">
 
                 {isActive && (

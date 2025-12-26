@@ -80,7 +80,7 @@ function App() {
           userVolume={interactions.userVolume}
           orbPosition={interactions.orbPosition}
         />
-        <VoiceInstructions />
+        {(interactions.connected || interactions.isRecording) && <VoiceInstructions />}
         <FloatingAssistant
           inputAnalyser={interactions.inputAnalyser}
           outputAnalyser={interactions.outputAnalyser}

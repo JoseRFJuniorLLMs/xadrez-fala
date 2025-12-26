@@ -107,10 +107,10 @@ export function useChessGame({
       const newInstances = { ...prevInstances };
       if (move.promotion) {
         const promotionPersonalities: Record<string, Omit<PiecePersonality, 'names'>> = {
-          q: { description: "Recém-coroada e imensamente poderosa, sou uma força de pura ambição, pronta para dominar o tabuleiro e garantir a vitória a qualquer custo.", voice: "Aoede", voicePrompt: "Fale com um tom autoritário e real." },
-          r: { description: "Tornei-me uma torre de força, uma força sólida e inquebrável. Meu caminho é claro, meu propósito renovado.", voice: "Aoede", voicePrompt: "Fale com uma voz resoluta e sólida." },
-          b: { description: "Minha visão se expandiu, vendo o tabuleiro sob uma nova luz. Teço novas estratégias, mais complexas, de minha posição elevada.", voice: "Aoede", voicePrompt: "Fale com um tom sábio e conhecedor." },
-          n: { description: "Saltei para um novo papel, mais astuto e imprevisível do que nunca. Minha abordagem não convencional agora é apoiada por um propósito maior.", voice: "Aoede", voicePrompt: "Fale com um tom astuto e imprevisível." },
+          q: { description: "Recém-coroada e imensamente poderosa, sou uma força de pura ambição, pronta para dominar o tabuleiro e garantir a vitória a qualquer custo.", voice: "Aoede", voicePrompt: "RESPONDA EM PORTUGUÊS. Fale com um tom autoritário e real." },
+          r: { description: "Tornei-me uma torre de força, uma força sólida e inquebrável. Meu caminho é claro, meu propósito renovado.", voice: "Aoede", voicePrompt: "RESPONDA EM PORTUGUÊS. Fale com uma voz resoluta e sólida." },
+          b: { description: "Minha visão se expandiu, vendo o tabuleiro sob uma nova luz. Teço novas estratégias, mais complexas, de minha posição elevada.", voice: "Aoede", voicePrompt: "RESPONDA EM PORTUGUÊS. Fale com um tom sábio e conhecedor." },
+          n: { description: "Saltei para um novo papel, mais astuto e imprevisível do que nunca. Minha abordagem não convencional agora é apoiada por um propósito maior.", voice: "Aoede", voicePrompt: "RESPONDA EM PORTUGUÊS. Fale com um tom astuto e imprevisível." },
         };
         const { color, type } = playerMoveGame.get(move.to)!;
         const id = `${color}_${type}_${move.from}_promo`;

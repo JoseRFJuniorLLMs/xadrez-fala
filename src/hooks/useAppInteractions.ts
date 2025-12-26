@@ -540,7 +540,7 @@ ${strategyWaitProtocol}`;
             identityDisambiguator = ` (casas ${getSquareColor(piece.square) === 'light' ? 'claras' : 'escuras'})`;
         }
 
-        const systemInstruction = `Você é ${piece.name}, uma ${piece.color === 'w' ? 'Branca' : 'Preta'} ${pieceTypeMap[piece.type]}${identityDisambiguator}.
+        const systemInstruction = `RESPONDA APENAS EM PORTUGUÊS (BRASIL). Você é ${piece.name}, uma ${piece.color === 'w' ? 'Branca' : 'Preta'} ${pieceTypeMap[piece.type]}${identityDisambiguator}.
 **Guia de Performance Vocal:** ${piece.personality.voicePrompt}
 **Persona do Personagem:** ${piece.personality.description}
 
