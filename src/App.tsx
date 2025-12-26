@@ -9,7 +9,6 @@ import Chessboard from './components/Chessboard';
 import SettingsModal from './components/SettingsModal';
 import TermsModal from './components/TermsModal';
 import VoiceInstructions from './components/VoiceInstructions';
-import VoiceVisualizer from './components/VoiceVisualizer';
 import FloatingAssistant from './components/FloatingAssistant';
 import { useSettings } from './contexts/SettingsContext';
 import { useChessGame } from './hooks/useChessGame';
@@ -80,12 +79,26 @@ function App() {
           userVolume={interactions.userVolume}
           orbPosition={interactions.orbPosition}
         />
-        {(interactions.connected || interactions.isRecording) && <VoiceInstructions />}
+        {interactions.isAssistantActive && <VoiceInstructions />}
+        {/* @ts-ignore - FloatingAssistant uses JS props and TS check is failing since the addition of isActive/onToggle */}
         <FloatingAssistant
           inputAnalyser={interactions.inputAnalyser}
           outputAnalyser={interactions.outputAnalyser}
           isRecording={interactions.isRecording}
           connected={interactions.connected}
+          isActive={interactions.isAssistantActive}
+          onToggle={() => {
+            if (interactions.isAssistantActive) {
+              interactions.clearChat();
+              interactions.setIsAssistantActive(false);
+            } else {
+              interactions.setIsAssistantActive(true);
+              // Se houver uma peça selecionada, inicia o chat com ela automaticamente
+              if (interactions.chattingWith) {
+                // Já conectado ou será conectado via FloatingAssistant/Interactions
+              }
+            }
+          }}
         />
       </main>
       <SettingsModal

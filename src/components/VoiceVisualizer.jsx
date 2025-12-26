@@ -23,6 +23,12 @@ const VoiceVisualizer = ({ inputAnalyser, outputAnalyser, isActive }) => {
     const cameraRef = useRef(null);
     const sphereRef = useRef(null);
     const frameRef = useRef(null);
+    const isActiveRef = useRef(isActive);
+
+    // Sincroniza a ref com a prop sem disparar o useEffect principal
+    useEffect(() => {
+        isActiveRef.current = isActive;
+    }, [isActive]);
 
     // Refs for animation state
     const prevTimeRef = useRef(performance.now());
@@ -34,7 +40,7 @@ const VoiceVisualizer = ({ inputAnalyser, outputAnalyser, isActive }) => {
     const ring3Ref = useRef(null);
 
     useEffect(() => {
-        if (!mountRef.current || !isActive) return;
+        if (!mountRef.current) return;
 
         // --- Scene Setup ---
         const scene = new THREE.Scene();
@@ -220,7 +226,7 @@ const VoiceVisualizer = ({ inputAnalyser, outputAnalyser, isActive }) => {
             renderer.dispose();
             pmremGenerator.dispose();
         };
-    }, [isActive, inputAnalyser, outputAnalyser]);
+    }, [inputAnalyser, outputAnalyser]);
 
     return (
         <div

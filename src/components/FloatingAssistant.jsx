@@ -4,14 +4,14 @@ import VoiceVisualizer from './VoiceVisualizer';
 import { useLiveAPIContext } from '../contexts/LiveAPIProvider';
 
 // Este componente foi reescrito para integrar com o sistema de xadrez existente
-const FloatingAssistant = ({ inputAnalyser, outputAnalyser, isRecording, connected }) => {
-    // Usamos o contexto global já existente no projeto para controlar a conexão
-    // e o estado de gravação (isRecording) passado via props do App.tsx
-
-    const isActive = connected || isRecording;
+const FloatingAssistant = ({ inputAnalyser, outputAnalyser, isRecording, connected, isActive, onToggle }) => {
+    // isActive agora vem via props (vincunlado ao isAssistantActive do useAppInteractions)
 
     return (
-        <div className="absolute bottom-8 right-8 z-[9999] flex flex-col items-center">
+        <div
+            className="absolute bottom-8 right-8 z-[9999] flex flex-col items-center cursor-pointer"
+            onClick={onToggle}
+        >
             <div className="relative flex items-center justify-center w-16 h-16">
 
                 {isActive && (
@@ -19,19 +19,19 @@ const FloatingAssistant = ({ inputAnalyser, outputAnalyser, isRecording, connect
                         <VoiceVisualizer
                             inputAnalyser={inputAnalyser}
                             outputAnalyser={outputAnalyser}
-                            isActive={isActive}
+                            isActive={isActive && connected} // Só anima se estiver conectado
                         />
                     </div>
                 )}
 
-                {/* Botão Visual Representativo (O controle real é feito clicando nas peças) */}
+                {/* Botão Visual Representativo (Interruptor Mestre) */}
                 <div
                     className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ease-out shadow-lg ${isActive
-                        ? 'animate-pulse bg-red-500 shadow-red-500/50'
+                        ? 'animate-pulse bg-red-500 shadow-red-500/50 scale-110'
                         : 'bg-gradient-to-br from-pink-500 to-purple-600 hover:scale-110 hover:shadow-xl hover:shadow-purple-500/70'
                         } opacity-80`}
                 >
-                    {isRecording ? <Mic className="w-8 h-8 text-white" /> : <MicOff className="w-8 h-8 text-white opacity-50" />}
+                    {isActive ? <Mic className="w-8 h-8 text-white" /> : <MicOff className="w-8 h-8 text-white opacity-50" />}
                 </div>
             </div>
         </div>

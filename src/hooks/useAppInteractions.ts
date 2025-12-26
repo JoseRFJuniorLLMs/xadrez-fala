@@ -153,6 +153,7 @@ export function useAppInteractions({
     const [orbPosition, setOrbPosition] = useState<Square | null>(null);
     const [inputAnalyser, setInputAnalyser] = useState<AnalyserNode | null>(null);
     const [outputAnalyser, setOutputAnalyser] = useState<AnalyserNode | null>(null);
+    const [isAssistantActive, setIsAssistantActive] = useState(false); // Novo estado mestre
 
     // State for the Strategic Advisor
     const [analysisState, setAnalysisState] = useState<AnalysisState>('idle');
@@ -639,6 +640,7 @@ ${historyString}
         };
 
         setChattingWith(piece);
+        setIsAssistantActive(true); // Garante que a esfera apareça ao clicar em uma peça
 
         connect(chatConfig).then(() => {
             console.log("Sending initial turn context.");
@@ -1015,27 +1017,35 @@ React naturally to this new situation. DO NOT narrate that you just moved or tha
         const pieceInstance = pieceInstances[square];
         const pieceOnSelectedSquare = selectedSquare ? game.get(selectedSquare) : null;
 
+        // Tentar fazer uma jogada
         if (selectedSquare && pieceOnSelectedSquare?.color === 'w' && game.turn() === 'w' && validMoves.includes(square)) {
             const moveResult = new Chess(game.fen()).move({ from: selectedSquare, to: square, promotion: 'q' });
             if (moveResult) {
                 setOrbPosition(square);
                 executeMove(moveResult);
-                clearChat();
+                // REMOVIDO: clearChat() - não queremos fechar o chat ao jogar
+                setSelectedSquare(null);
+                setValidMoves([]);
+                setValidMovesSAN([]);
             }
             return;
         }
 
+        // Selecionar peça para destaque ou troca de contexto vocal (sem fechar se já estiver ativo)
         if (pieceInstance) {
             if (chattingWith?.id === pieceInstance.id) {
-                setIsRecording(isRec => !isRec);
-            }
-            else {
+                // Se já estiver falando com ela, apenas muda a seleção visual
+                setSelectedSquare(square);
+            } else {
                 startChat(pieceInstance);
             }
             return;
         }
 
-        clearChat();
+        // Clicar no vazio apenas limpa seleção visual, NÃO fecha o assistente
+        setSelectedSquare(null);
+        setValidMoves([]);
+        setValidMovesSAN([]);
     };
 
     useEffect(() => {
@@ -1079,6 +1089,6 @@ React naturally to this new situation. DO NOT narrate that you just moved or tha
     return {
         selectedSquare, validMoves, validMovesSAN, chattingWith, isRecording, error, talkingVolume, userVolume, orbPosition, hoveredSquare,
         handleSquareClick, setChattingWith, setHoveredSquare, retryStrategyAnalysis,
-        inputAnalyser, outputAnalyser, connected
+        inputAnalyser, outputAnalyser, connected, isAssistantActive, setIsAssistantActive, clearChat
     };
 }
