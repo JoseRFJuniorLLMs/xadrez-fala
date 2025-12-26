@@ -103,10 +103,11 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* Changed from flex-start to center */
   gap: 2rem;
   padding: 1rem;
   min-height: 0;
+  position: relative;
+  /* Fixed: added relative for side card positioning */
 }
 
 .left-panel {
@@ -192,8 +193,8 @@ body {
 
 /* --- GDM CHESSBOARD STYLES --- */
 .board-container {
-  width: clamp(320px, 85vmin, 750px);
-  height: clamp(320px, 85vmin, 750px);
+  width: clamp(320px, 92vmin, 850px);
+  height: clamp(320px, 92vmin, 850px);
   position: relative;
   display: flex;
   justify-content: center;
@@ -212,6 +213,68 @@ body {
   border: none;
   border-radius: 4px;
   overflow: visible;
+  background-color: var(--gdm-dark-square);
+  /* Give the grid a background */
+}
+
+/* --- BORDER COORDINATES --- */
+.coordinates-container {
+  position: absolute;
+  top: -30px;
+  left: -30px;
+  right: -30px;
+  bottom: -30px;
+  pointer-events: none;
+  display: flex;
+  color: var(--text-dark);
+  font-family: var(--font-family);
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.ranks-labels {
+  position: absolute;
+  top: 30px;
+  bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  align-items: center;
+}
+
+.ranks-labels.left {
+  left: 0;
+}
+
+.ranks-labels.right {
+  right: 0;
+}
+
+.files-labels {
+  position: absolute;
+  left: 30px;
+  right: 30px;
+  display: flex;
+  justify-content: space-around;
+  height: 30px;
+  align-items: center;
+}
+
+.files-labels.top {
+  top: 0;
+}
+
+.files-labels.bottom {
+  bottom: 0;
+}
+
+.rank-label,
+.file-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: uppercase;
 }
 
 /* The grid is a pseudo-element to ensure it's layered below the piece's glow */

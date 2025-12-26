@@ -27,7 +27,13 @@ export class AudioRecorder {
 
   private starting: Promise<void> | null = null;
 
-  constructor(public sampleRate = 16000) {}
+  constructor(public sampleRate = 16000) { }
+
+  public getAnalyser(): AnalyserNode | undefined {
+    return this.analyser;
+  }
+
+  private analyser: AnalyserNode | undefined;
 
   async start() {
     if (this.recording || this.starting) return;
@@ -42,17 +48,22 @@ export class AudioRecorder {
         this.audioContext = audioCtx;
         this.source = this.audioContext.createMediaStreamSource(this.stream);
 
+        // Create Analyser for external use (visualizer)
+        this.analyser = this.audioContext.createAnalyser();
+        this.analyser.fftSize = 256;
+        this.source.connect(this.analyser);
+
         if (!audioCtx._registeredWorklets) {
           audioCtx._registeredWorklets = new Set<string>();
         }
 
         const workletName = 'audio-recorder-worklet';
         if (!audioCtx._registeredWorklets.has(workletName)) {
-            const src = createWorketFromSrc(workletName, AudioRecordingWorklet);
-            await this.audioContext.audioWorklet.addModule(src);
-            audioCtx._registeredWorklets.add(workletName);
+          const src = createWorketFromSrc(workletName, AudioRecordingWorklet);
+          await this.audioContext.audioWorklet.addModule(src);
+          audioCtx._registeredWorklets.add(workletName);
         }
-        
+
         this.recordingWorklet = new AudioWorkletNode(this.audioContext, workletName);
 
         this.recordingWorklet.port.onmessage = (ev: MessageEvent) => {
@@ -66,9 +77,9 @@ export class AudioRecorder {
 
         const vuWorkletName = 'vu-meter';
         if (!audioCtx._registeredWorklets.has(vuWorkletName)) {
-            const vuSrc = createWorketFromSrc(vuWorkletName, VolMeterWorket);
-            await this.audioContext.audioWorklet.addModule(vuSrc);
-            audioCtx._registeredWorklets.add(vuWorkletName);
+          const vuSrc = createWorketFromSrc(vuWorkletName, VolMeterWorket);
+          await this.audioContext.audioWorklet.addModule(vuSrc);
+          audioCtx._registeredWorklets.add(vuWorkletName);
         }
         this.vuWorklet = new AudioWorkletNode(this.audioContext, vuWorkletName);
         this.vuWorklet.port.onmessage = (ev: MessageEvent) => {
@@ -81,7 +92,7 @@ export class AudioRecorder {
         this.starting = null;
       }
     })();
-    
+
     return this.starting;
   }
 

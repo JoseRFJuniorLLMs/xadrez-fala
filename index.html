@@ -37,6 +37,29 @@
   }
 }
 </script>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyBzjh1bPDlKTwOQyhDSCG6JXfl0DOiaYXU",
+      authDomain: "xadrez-fala.firebaseapp.com",
+      projectId: "xadrez-fala",
+      storageBucket: "xadrez-fala.firebasestorage.app",
+      messagingSenderId: "1522592886",
+      appId: "1:1522592886:web:4148e21f782660b4254357",
+      measurementId: "G-YXXN7ZVGF5"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
   <link rel="stylesheet" href="/index.css">
 </head>
 

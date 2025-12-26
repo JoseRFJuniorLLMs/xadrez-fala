@@ -8,6 +8,6 @@
 export const DEFAULT_LIVE_API_MODEL =
   'gemini-2.5-flash-native-audio-preview-12-2025';
 
-export const DEFAULT_VOICE = 'Zephyr';
+export const DEFAULT_VOICE = 'Aoede';
 
-export const AVAILABLE_VOICES = ['Puck', 'Charon', 'Kore', 'Fenrir', 'Aoede', 'Leda', 'Orus', 'Zephyr'];
+export const AVAILABLE_VOICES = ['Aoede'];

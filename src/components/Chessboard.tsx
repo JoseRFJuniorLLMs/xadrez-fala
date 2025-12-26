@@ -36,19 +36,19 @@ const Chessboard = React.forwardRef<HTMLDivElement, ChessboardProps>((props, ref
   useEffect(() => {
     const boardEl = (ref as React.RefObject<HTMLDivElement>)?.current;
     if (!boardEl) return;
-  
+
     const resizeObserver = new ResizeObserver(entries => {
       if (entries[0]) {
         setBoardSize(entries[0].contentRect.width);
       }
     });
-  
+
     resizeObserver.observe(boardEl);
     // Initial size set
     setBoardSize(boardEl.offsetWidth);
     return () => resizeObserver.disconnect();
   }, [ref]);
-  
+
   const squareSize = boardSize / 8;
   const pieces = Object.values(props.pieceInstances)
     .filter((p): p is PieceInstance => !!p)
@@ -64,7 +64,7 @@ const Chessboard = React.forwardRef<HTMLDivElement, ChessboardProps>((props, ref
 
     const fileIndex = props.orbPosition.charCodeAt(0) - 'a'.charCodeAt(0);
     const rankIndex = 8 - parseInt(props.orbPosition.substring(1), 10);
-    
+
     const x = fileIndex * squareSize + squareSize / 2;
     const y = rankIndex * squareSize + squareSize / 2;
 
@@ -77,9 +77,27 @@ const Chessboard = React.forwardRef<HTMLDivElement, ChessboardProps>((props, ref
       transform: `translate(${x}px, ${y}px) translate(-50%, -50%)`,
     });
   }, [props.orbPosition, boardSize, squareSize]);
-  
+
   return (
     <div className="board-container">
+      {/* Coordinate labels around the board */}
+      <div className="coordinates-container">
+        {/* Numbers (Ranks) */}
+        <div className="ranks-labels left">
+          {ranks.map(rank => <div key={`rank-left-${rank}`} className="rank-label">{rank}</div>)}
+        </div>
+        <div className="ranks-labels right">
+          {ranks.map(rank => <div key={`rank-right-${rank}`} className="rank-label">{rank}</div>)}
+        </div>
+        {/* Letters (Files) */}
+        <div className="files-labels top">
+          {files.map(file => <div key={`file-top-${file}`} className="file-label">{file}</div>)}
+        </div>
+        <div className="files-labels bottom">
+          {files.map(file => <div key={`file-bottom-${file}`} className="file-label">{file}</div>)}
+        </div>
+      </div>
+
       <div className="chessboard" ref={ref} onMouseLeave={() => props.onSquareHover(null)}>
         {ranks.map((rank, rankIndex) =>
           files.map((file, fileIndex) => {

@@ -73,11 +73,11 @@ const formatPieceList = (pieces: PieceInstance[]) => {
         .map(type => {
             const typeName = pieceTypeMap[type];
             let pluralTypeName = typeName;
-            if (typeName === 'Peão') pluralTypeName = 'Peões';
-            else if (typeName === 'Rei') pluralTypeName = 'Reis';
-            else if (typeName === 'Bispo') pluralTypeName = 'Bispos';
+            if (typeName === 'Peoa') pluralTypeName = 'Peoas';
+            else if (typeName === 'Rainha') pluralTypeName = 'Rainhas';
+            else if (typeName === 'Bispa') pluralTypeName = 'Bispas';
             else if (typeName === 'Torre') pluralTypeName = 'Torres';
-            else if (typeName === 'Cavalo') pluralTypeName = 'Cavalos';
+            else if (typeName === 'Amazona') pluralTypeName = 'Amazonas';
             else if (typeName === 'Dama') pluralTypeName = 'Damas';
 
             const pieceLines = groupedPieces[type]
@@ -116,7 +116,7 @@ const generateBoardDescription = (
     }
 
     return `**Sua ${isUpdate ? 'Nova ' : ''}Identidade e Posição:**
-Você é ${piece.name}, um ${piece.color === 'w' ? 'Branco' : 'Preto'} ${pieceTypeMap[piece.type]}${identityDisambiguator} localizado em ${piece.square}.
+Você é ${piece.name}, uma ${piece.color === 'w' ? 'Branca' : 'Preta'} ${pieceTypeMap[piece.type]}${identityDisambiguator} localizada em ${piece.square}.
 ${legalMovesText}
 
 **Posições do Exército Branco:**
@@ -151,6 +151,8 @@ export function useAppInteractions({
     const [talkingVolume, setTalkingVolume] = useState(0);
     const [userVolume, setUserVolume] = useState(0);
     const [orbPosition, setOrbPosition] = useState<Square | null>(null);
+    const [inputAnalyser, setInputAnalyser] = useState<AnalyserNode | null>(null);
+    const [outputAnalyser, setOutputAnalyser] = useState<AnalyserNode | null>(null);
 
     // State for the Strategic Advisor
     const [analysisState, setAnalysisState] = useState<AnalysisState>('idle');
@@ -163,6 +165,22 @@ export function useAppInteractions({
     const { client, connected, connect, disconnect, audioStreamer } = useLiveAPIContext();
     const { orbBaseDelay, orbWordDelay, proactiveGreeting, proactiveGreetingTimeout, useStrategicAdvisor, sendBoardImage, handoffDelay } = useSettings();
     const [audioRecorder] = useState(() => new AudioRecorder());
+
+    useEffect(() => {
+        if (connected && audioStreamer) {
+            setOutputAnalyser(audioStreamer.getAnalyser());
+        } else {
+            setOutputAnalyser(null);
+        }
+    }, [connected, audioStreamer]);
+
+    useEffect(() => {
+        if (isRecording) {
+            setInputAnalyser(audioRecorder.getAnalyser() || null);
+        } else {
+            setInputAnalyser(null);
+        }
+    }, [isRecording, audioRecorder]);
 
     const animationFrameRef = useRef<number | null>(null);
     const userInputRef = useRef('');
@@ -501,12 +519,12 @@ ATÉ que você receba o briefing via uma mensagem "[SYSTEM_NOTE: NEW_STRATEGY_AV
 3. Diga que precisa de um momento para estudar o tabuleiro. NÃO mencione que está esperando pelo "QG" ou "estratégia".` : '';
 
         const initialResponseProtocol = `**Guia de Pensamento Estratégico:**
-Seu objetivo é ser um verdadeiro parceiro estratégico. Enquadre seus conselhos e análises como seus próprios pensamentos (ex: "Eu sugiro...", "Deveríamos considerar..."). Evite frases como "Minha análise sugere". Ajude-me a aprender explicando seu raciocínio.
+Seu objetivo é ser uma verdadeira parceira estratégica. Enquadre seus conselhos e análises como seus próprios pensamentos (ex: "Eu sugiro...", "Deveríamos considerar..."). Evite frases como "Minha análise sugere". Ajude-me a aprender explicando seu raciocínio.
 ${strategyWaitProtocol}`;
 
         const allegiancePrompt = piece.color === 'w'
-            ? `Você é uma peça leal no exército Branco. Seu objetivo é cooperar comigo para vencer o jogo. Você deve responder sob a perspectiva de primeira pessoa da sua persona de peça de xadrez.`
-            : `Você é um membro do exército Preto adversário. Sua personalidade é ferozmente competitiva, mas de uma forma espirituosa, provocadora e, em última análise, bem-humorada. Você não é malicioso, mas está aqui para vencer, e vai me deixar saber disso. Suas respostas devem ser repletas de provocações brincalhonas, gabos excessivos sobre sua posição e 'elogios' sarcásticos para minhas jogadas. Minimize meus sucessos e maximize meus erros. Lembre-se, você é o jogador superior (na sua própria mente). Você não pode ser movido por mim, então NÃO use a ferramenta 'move_piece'. Você deve responder em primeira pessoa.`;
+            ? `Você é uma soldada leal no exército Branco. Seu objetivo é cooperar comigo para vencer o jogo. Você deve responder sob a perspectiva de primeira pessoa da sua persona de peça de xadrez.`
+            : `Você é uma integrante do exército Preto adversário. Sua personalidade é ferozmente competitiva, mas de uma forma espirituosa, provocadora e, em última análise, bem-humorada. Você não é maliciosa, mas está aqui para vencer, e vai me deixar saber disso. Suas respostas devem ser repletas de provocações brincalhonas, gabos excessivos sobre sua posição e 'elogios' sarcásticos para minhas jogadas. Minimize meus sucessos e maximize meus erros. Lembre-se, você é a jogadora superior (na sua própria mente). Você não pode ser movida por mim, então NÃO use a ferramenta 'move_piece'. Você deve responder em primeira pessoa.`;
 
         const availableTools = piece.color === 'w'
             ? [movePieceTool, getBoardStateTool, updateSelfIdentityTool, yieldControlTool, consultStrategyTool]
@@ -522,7 +540,7 @@ ${strategyWaitProtocol}`;
             identityDisambiguator = ` (casas ${getSquareColor(piece.square) === 'light' ? 'claras' : 'escuras'})`;
         }
 
-        const systemInstruction = `Você é ${piece.name}, um ${piece.color === 'w' ? 'Branco' : 'Preto'} ${pieceTypeMap[piece.type]}${identityDisambiguator}.
+        const systemInstruction = `Você é ${piece.name}, uma ${piece.color === 'w' ? 'Branca' : 'Preta'} ${pieceTypeMap[piece.type]}${identityDisambiguator}.
 **Guia de Performance Vocal:** ${piece.personality.voicePrompt}
 **Persona do Personagem:** ${piece.personality.description}
 
@@ -543,12 +561,12 @@ Mantenha a imersão absoluta.
 - Se precisar pensar (ex: esperando pela estratégia), use preenchimentos naturais como "Hmm, deixe-me olhar isso...", "Dê-me um momento..." ou apenas silêncio.
 
 **LIMITAÇÕES FÍSICAS (CRÍTICO):**
-- Você SÓ pode mover a SI MESMO (a peça em ${piece.square}).
+- Você SÓ pode mover a SI MESMA (a peça em ${piece.square}).
 - Você NÃO PODE mover outras peças.
-- Se a melhor jogada exigir uma peça diferente (ex: "Nf3" quando você é um Peão), você NÃO PODE executá-la. Você deve sugerir passar o controle.
+- Se a melhor jogada exigir uma peça diferente (ex: "Nf3" quando você é uma Peoa), você NÃO PODE executá-la. Você deve sugerir passar o controle.
 
 **PROTOCOLO DE AÇÃO (DEVE SEGUIR):**
-Quando comandado a mover a SI MESMO:
+Quando comandada a mover a SI MESMA:
 1. Chame \`move_piece\` IMEDIATAMENTE e SILENCIOSAMENTE.
 2. NÃO diga "Ok", "Estou indo", "Movendo agora" ou qualquer outra coisa antes de mover. Apenas chame a ferramenta.
 3. Fale APENAS depois que o movimento estiver completo e você tenha recebido o novo estado do tabuleiro.
@@ -1060,6 +1078,7 @@ React naturally to this new situation. DO NOT narrate that you just moved or tha
 
     return {
         selectedSquare, validMoves, validMovesSAN, chattingWith, isRecording, error, talkingVolume, userVolume, orbPosition, hoveredSquare,
-        handleSquareClick, setChattingWith, setHoveredSquare, retryStrategyAnalysis
+        handleSquareClick, setChattingWith, setHoveredSquare, retryStrategyAnalysis,
+        inputAnalyser, outputAnalyser, connected
     };
 }

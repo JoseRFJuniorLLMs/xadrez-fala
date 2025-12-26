@@ -20,11 +20,11 @@ export class AudioStreamer {
   constructor(public context: AudioContext) {
     this.gainNode = this.context.createGain();
     this.analyser = this.context.createAnalyser();
-    
+
     this.analyser.fftSize = 64;
     this.analyser.smoothingTimeConstant = 0.6;
     this.volumeDataArray = new Uint8Array(this.analyser.frequencyBinCount);
-    
+
     this.gainNode.connect(this.context.destination);
   }
 
@@ -57,14 +57,14 @@ export class AudioStreamer {
     await this.resume();
 
     const audioBuffer = await this.decodeAndBuffer(chunk);
-    
+
     // Schedule this buffer to play right after the previous one, or now if it's the first.
     // This ensures gapless playback.
     this.nextStartTime = Math.max(this.nextStartTime, this.context.currentTime);
 
     const source = this.context.createBufferSource();
     source.buffer = audioBuffer;
-    
+
     // Route audio through analyser before sending to gain/output
     source.connect(this.analyser);
     this.analyser.connect(this.gainNode);
@@ -73,7 +73,7 @@ export class AudioStreamer {
     source.addEventListener('ended', () => {
       this.sources.delete(source);
     });
-    
+
     source.start(this.nextStartTime);
 
     // Update the start time for the next buffer.
@@ -95,17 +95,24 @@ export class AudioStreamer {
   }
 
   /**
+   * Returns the internal AnalyserNode for external visualization.
+   */
+  public getAnalyser(): AnalyserNode {
+    return this.analyser;
+  }
+
+  /**
    * Stops all currently playing and scheduled audio sources immediately.
    * This is used for interruptions or when disconnecting.
    */
   stop() {
     for (const source of this.sources.values()) {
-        try {
-            source.stop();
-        } catch (e) {
-            // It's possible the source already stopped, so we can ignore the error.
-            console.warn("Could not stop audio source, it may have already finished.", e);
-        }
+      try {
+        source.stop();
+      } catch (e) {
+        // It's possible the source already stopped, so we can ignore the error.
+        console.warn("Could not stop audio source, it may have already finished.", e);
+      }
     }
     this.sources.clear();
     this.nextStartTime = 0;

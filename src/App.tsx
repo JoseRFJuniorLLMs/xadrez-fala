@@ -8,6 +8,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import Chessboard from './components/Chessboard';
 import SettingsModal from './components/SettingsModal';
 import TermsModal from './components/TermsModal';
+import VoiceInstructions from './components/VoiceInstructions';
+import VoiceVisualizer from './components/VoiceVisualizer';
+import FloatingAssistant from './components/FloatingAssistant';
 import { useSettings } from './contexts/SettingsContext';
 import { useChessGame } from './hooks/useChessGame';
 import { usePieceCustomization } from './hooks/usePieceCustomization';
@@ -76,6 +79,13 @@ function App() {
           talkingVolume={interactions.talkingVolume}
           userVolume={interactions.userVolume}
           orbPosition={interactions.orbPosition}
+        />
+        <VoiceInstructions />
+        <FloatingAssistant
+          inputAnalyser={interactions.inputAnalyser}
+          outputAnalyser={interactions.outputAnalyser}
+          isRecording={interactions.isRecording}
+          connected={interactions.connected}
         />
       </main>
       <SettingsModal

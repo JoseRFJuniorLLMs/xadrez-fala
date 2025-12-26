@@ -7,7 +7,7 @@ import React, { useState, useCallback, useRef } from 'react';
 import { GoogleGenAI, Modality } from '@google/genai';
 import { PieceInstance, ImageTransform } from '../types';
 
-const pieceTypeMap: Record<string, string> = { p: "Peão", n: "Cavalo", b: "Bispo", r: "Torre", q: "Dama", k: "Rei" };
+const pieceTypeMap: Record<string, string> = { p: "Peoa", n: "Amazona", b: "Bispa", r: "Torre", q: "Dama", k: "Rainha" };
 
 export function usePieceCustomization() {
   const [imagePromptTemplate, setImagePromptTemplate] = useState('Arte de fantasia de uma peça de xadrez {type} de cor {color}, chamada {name}. Descrição da peça: {description}. Estilo de voz/fala: {voicePrompt}. O estilo deve ser épico, detalhado, com iluminação dramática. O personagem desenhado é a própria peça de xadrez (não desenhe um personagem humano). Evite texto. Proporção quadrada.');

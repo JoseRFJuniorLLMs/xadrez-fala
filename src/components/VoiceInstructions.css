@@ -1,0 +1,66 @@
+.voice-instructions {
+    position: absolute;
+    right: 20px;
+    top: 55%;
+    /* Slightly lower to make room for the sphere above */
+    transform: translateY(-50%);
+    padding: 1.2rem;
+    background: rgba(49, 46, 43, 0.95);
+    border: 1px solid rgba(129, 182, 76, 0.3);
+    border-radius: 8px;
+    width: 240px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    z-index: 5;
+    backdrop-filter: blur(4px);
+}
+
+.voice-instructions h3 {
+    margin-top: 0;
+    margin-bottom: 0.8rem;
+    color: #81b64c;
+    font-family: var(--font-family);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.instructions-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.instruction-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    padding: 0;
+}
+
+.instruction-item .command {
+    font-family: var(--font-family);
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: #fff;
+    margin-bottom: 0.1rem;
+}
+
+.instruction-item p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--text-dark);
+    line-height: 1.2;
+}
+
+@media (max-width: 1200px) {
+    .voice-instructions {
+        position: static;
+        transform: none;
+        width: 100%;
+        max-width: 400px;
+        margin-top: 2rem;
+        order: 2;
+    }
+}

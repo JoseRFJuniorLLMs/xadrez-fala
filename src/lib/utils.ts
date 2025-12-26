@@ -81,7 +81,7 @@ export const pieceToUnicode: { [key: string]: string } = {
 };
 
 export const pieceTypeMap: Record<string, string> = {
-  p: "Pawn", n: "Knight", b: "Bishop", r: "Rook", q: "Queen", k: "King"
+  p: "Peoa", n: "Amazona", b: "Bispa", r: "Torre", q: "Dama", k: "Rainha"
 };
 
 // Helper function to determine if a square is light or dark.
